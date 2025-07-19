@@ -6,6 +6,9 @@
   
   .chat-header {
     flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     
     .spacer {
       flex: 1;

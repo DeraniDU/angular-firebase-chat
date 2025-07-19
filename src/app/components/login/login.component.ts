@@ -6,6 +6,8 @@ import { AuthService } from '../../services/auth.service';
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
+  // Remove 'standalone: true' if present
+  // Remove 'imports: []' if present
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;

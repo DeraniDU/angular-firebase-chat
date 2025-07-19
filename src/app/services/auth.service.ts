@@ -3,7 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { switchMap, map } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import firebase from 'firebase/compat/app';
 
 export interface User {
@@ -28,7 +28,7 @@ export class AuthService {
       switchMap(user => {
         if (user) {
           return this.afs.doc<User>(`users/${user.uid}`).valueChanges().pipe(
-            map(userData => userData || null)
+            switchMap(userDoc => userDoc ? [userDoc] : [null])
           );
         } else {
           return [null];

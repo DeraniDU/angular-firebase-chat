@@ -8,6 +8,8 @@ import { ChatService, Message } from '../../services/chat.service';
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss']
+  // Remove 'standalone: true' if present
+  // Remove 'imports: []' if present
 })
 export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChild('messagesContainer') messagesContainer!: ElementRef;

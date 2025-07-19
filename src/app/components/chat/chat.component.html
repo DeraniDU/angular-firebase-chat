@@ -2,7 +2,7 @@
     <!-- Header -->
     <mat-toolbar color="primary" class="chat-header">
       <span>Chat App</span>
-      <span class="spacer"></span>
+      <div class="spacer"></div>
       <div *ngIf="user$ | async as user" class="user-info">
         <img *ngIf="user.photoURL" [src]="user.photoURL" alt="Avatar" class="avatar">
         <span>{{ user.displayName }}</span>
@@ -27,7 +27,7 @@
           <div class="message-text">{{ message.text }}</div>
           
           <div class="message-time">
-            {{ message.timestamp.toDate() | date:'short' }}
+            {{ message.timestamp?.toDate ? (message.timestamp.toDate() | date:'short') : (message.timestamp | date:'short') }}
           </div>
         </div>
       </div>
