@@ -1,0 +1,63 @@
+<div class="login-container" fxLayout="column" fxLayoutAlign="center center">
+    <mat-card class="login-card">
+      <mat-card-header>
+        <mat-card-title>{{ isSignUp ? 'Sign Up' : 'Sign In' }}</mat-card-title>
+      </mat-card-header>
+  
+      <mat-card-content>
+        <form [formGroup]="isSignUp ? signupForm : loginForm" (ngSubmit)="onSubmit()">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" formControlName="email" required>
+            <mat-error *ngIf="(isSignUp ? signupForm : loginForm).get('email')?.hasError('email')">
+              Please enter a valid email
+            </mat-error>
+          </mat-form-field>
+  
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Password</mat-label>
+            <input matInput type="password" formControlName="password" required>
+            <mat-error *ngIf="(isSignUp ? signupForm : loginForm).get('password')?.hasError('minlength')">
+              Password must be at least 6 characters
+            </mat-error>
+          </mat-form-field>
+  
+          <mat-form-field *ngIf="isSignUp" appearance="outline" class="full-width">
+            <mat-label>Confirm Password</mat-label>
+            <input matInput type="password" formControlName="confirmPassword" required>
+          </mat-form-field>
+  
+          <div class="error" *ngIf="error">{{ error }}</div>
+  
+          <button 
+            mat-raised-button 
+            color="primary" 
+            type="submit" 
+            class="full-width"
+            [disabled]="loading || (isSignUp ? signupForm.invalid : loginForm.invalid)">
+            {{ loading ? 'Loading...' : (isSignUp ? 'Sign Up' : 'Sign In') }}
+          </button>
+        </form>
+  
+        <div class="divider">OR</div>
+  
+        <button 
+          mat-raised-button 
+          color="accent" 
+          class="full-width google-btn"
+          (click)="signInWithGoogle()"
+          [disabled]="loading">
+          <mat-icon>account_circle</mat-icon>
+          Continue with Google
+        </button>
+  
+        <div class="toggle-mode">
+          <span>{{ isSignUp ? 'Already have an account?' : "Don't have an account?" }}</span>
+          <button mat-button color="primary" (click)="toggleMode()">
+            {{ isSignUp ? 'Sign In' : 'Sign Up' }}
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  
