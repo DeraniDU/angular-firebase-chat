@@ -1,34 +1,21 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AppRoutingModule } from './app-routing.module';
 
-// Firebase imports
+// Firebase
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 
-// Angular Material imports
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-
-// CDK imports
-import { TextFieldModule } from '@angular/cdk/text-field';
-
-// App components and routing
-import { AppRoutingModule } from './app-routing.module';
+// Components
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
 import { ChatComponent } from './components/chat/chat.component';
-import { environment } from '../environments/environment';
+
+// Guards
+import { AuthGuard } from './guards/auth.guard';
 
 @NgModule({
   declarations: [
@@ -38,31 +25,22 @@ import { environment } from '../environments/environment';
   ],
   imports: [
     BrowserModule,
-    CommonModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
     AppRoutingModule,
-    
-    // Firebase modules
-    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireModule.initializeApp({
+      apiKey: "AIzaSyDiyYg5v5i9OKEggWeV3Y2J6iEnRiOxb5Y",
+      authDomain: "chat-app-angular-36946.firebaseapp.com",
+      projectId: "chat-app-angular-36946",
+      storageBucket: "chat-app-angular-36946.appspot.com",
+      messagingSenderId: "952980783579",
+      appId: "1:952980783579:web:d86c37e07ead809cfda7fe",
+      measurementId: "G-3QWXC7SXP1"
+    }),
     AngularFireAuthModule,
-    AngularFirestoreModule,
-    
-    // Angular Material modules
-    MatToolbarModule,
-    MatButtonModule,
-    MatCardModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatListModule,
-    MatProgressSpinnerModule,
-    MatSnackBarModule,
-    
-    // CDK modules
-    TextFieldModule
+    AngularFirestoreModule
   ],
-  providers: [],
+  providers: [AuthGuard],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

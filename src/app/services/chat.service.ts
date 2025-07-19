@@ -2,15 +2,15 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AuthService, User } from './auth.service';
+import { User } from './auth.service';
+import firebase from 'firebase/compat/app';
 
 export interface Message {
   id?: string;
   text: string;
   userId: string;
-  userName: string;
-  userPhoto?: string;
-  timestamp: Date;
+  userEmail: string;
+  timestamp: firebase.firestore.Timestamp;
 }
 
 @Injectable({
@@ -19,26 +19,17 @@ export interface Message {
 export class ChatService {
   private messagesCollection;
 
-  constructor(
-    private afs: AngularFirestore,
-    private authService: AuthService
-  ) {
-    this.messagesCollection = this.afs.collection('messages');
+  constructor(private firestore: AngularFirestore) {
+    this.messagesCollection = this.firestore.collection<Message>('messages');
   }
-
-  // Removed duplicate constructor
 
   getMessages(): Observable<Message[]> {
     return this.messagesCollection
-      .snapshotChanges()
+      .valueChanges({ idField: 'id' })
       .pipe(
-        map(actions =>
-          actions.map(a => {
-            const data = a.payload.doc.data() as Message;
-            const id = a.payload.doc.id;
-            return { id, ...data };
-          })
-        )
+        map(messages => messages.sort((a, b) => 
+          a.timestamp?.seconds - b.timestamp?.seconds
+        ))
       );
   }
 
@@ -46,16 +37,10 @@ export class ChatService {
     const message: Omit<Message, 'id'> = {
       text,
       userId: user.uid,
-      userName: user.displayName || user.email,
-      userPhoto: user.photoURL || '',
-      timestamp: new Date()
+      userEmail: user.email,
+      timestamp: firebase.firestore.Timestamp.now()
     };
 
-    try {
-      await this.messagesCollection.add(message);
-    } catch (error) {
-      console.error('Error sending message:', error);
-      throw error;
-    }
+    return this.messagesCollection.add(message);
   }
 }

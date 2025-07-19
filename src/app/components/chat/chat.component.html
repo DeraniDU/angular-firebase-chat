@@ -1,60 +1,42 @@
 <div class="chat-container">
-    <!-- Header -->
-    <mat-toolbar color="primary" class="chat-header">
-      <span>Chat App</span>
-      <div class="spacer"></div>
-      <div *ngIf="user$ | async as user" class="user-info">
-        <img *ngIf="user.photoURL" [src]="user.photoURL" alt="Avatar" class="avatar">
-        <span>{{ user.displayName }}</span>
-        <button mat-icon-button (click)="signOut()">
-          <mat-icon>logout</mat-icon>
-        </button>
-      </div>
-    </mat-toolbar>
-  
-    <!-- Messages -->
-    <div class="messages-container" #messagesContainer>
-      <div *ngFor="let message of messages$ | async" 
-           class="message-wrapper"
-           [class.my-message]="isMyMessage(message)">
-        
-        <div class="message-bubble" [class.my-bubble]="isMyMessage(message)">
-          <div class="message-header" *ngIf="!isMyMessage(message)">
-            <img *ngIf="message.userPhoto" [src]="message.userPhoto" alt="Avatar" class="message-avatar">
-            <span class="username">{{ message.userName }}</span>
-          </div>
-          
-          <div class="message-text">{{ message.text }}</div>
-          
-          <div class="message-time">
-            {{ message.timestamp?.toDate ? (message.timestamp.toDate() | date:'short') : (message.timestamp | date:'short') }}
-          </div>
-        </div>
+    <div class="chat-header">
+      <h3>Chat Room</h3>
+      <div class="user-info" *ngIf="currentUser">
+        <span>{{ currentUser.email }}</span>
+        <button class="sign-out-btn" (click)="signOut()">Sign Out</button>
       </div>
     </div>
-  
-    <!-- Message Input -->
+    
+    <div class="messages-container" #messagesContainer>
+      <div class="message" 
+           *ngFor="let message of messages$ | async; trackBy: trackByMessageId"
+           [class.my-message]="isMyMessage(message)"
+           [class.other-message]="!isMyMessage(message)">
+        <div class="message-header">
+          <span class="user-email">{{ message.userEmail }}</span>
+          <span class="timestamp">{{ message.timestamp?.toDate() | date:'short' }}</span>
+        </div>
+        <div class="message-text">{{ message.text }}</div>
+      </div>
+    </div>
+    
     <div class="message-input-container">
-      <mat-form-field appearance="outline" class="message-input">
-        <textarea 
-          matInput 
+      <div class="input-wrapper">
+        <input 
+          type="text" 
           [formControl]="messageControl"
-          placeholder="Type a message..."
-          (keydown)="onKeyPress($event)"
-          rows="1"
-          cdkTextareaAutosize
-          cdkAutosizeMinRows="1"
-          cdkAutosizeMaxRows="4"></textarea>
-      </mat-form-field>
-      
-      <button 
-        mat-fab 
-        color="primary" 
-        class="send-button"
-        (click)="sendMessage()"
-        [disabled]="!messageControl.value?.trim()">
-        <mat-icon>send</mat-icon>
-      </button>
+          placeholder="Type your message..."
+          (keypress)="onKeyPress($event)"
+          class="message-input"
+        >
+        <button 
+          class="send-btn" 
+          (click)="sendMessage()"
+          [disabled]="!messageControl.value?.trim()"
+        >
+          Send
+        </button>
+      </div>
     </div>
   </div>
   

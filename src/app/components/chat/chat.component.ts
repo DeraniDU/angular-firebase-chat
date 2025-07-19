@@ -8,17 +8,15 @@ import { ChatService, Message } from '../../services/chat.service';
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss']
-  // Remove 'standalone: true' if present
-  // Remove 'imports: []' if present
 })
 export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChild('messagesContainer') messagesContainer!: ElementRef;
-  
+
   user$: Observable<User | null>;
   messages$: Observable<Message[]>;
   messageControl = new FormControl('');
   currentUser: User | null = null;
-  
+
   private subscription = new Subscription();
 
   constructor(
@@ -71,7 +69,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   private scrollToBottom() {
     try {
       if (this.messagesContainer) {
-        this.messagesContainer.nativeElement.scrollTop = 
+        this.messagesContainer.nativeElement.scrollTop =
           this.messagesContainer.nativeElement.scrollHeight;
       }
     } catch (err) {

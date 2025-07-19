@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
-  // Remove 'standalone: true' if present
-  // Remove 'imports: []' if present
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
@@ -18,7 +17,8 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -32,17 +32,24 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.authService.user$.subscribe(user => {
+      if (user) {
+        this.router.navigate(['/chat']);
+      }
+    });
+  }
 
   toggleMode() {
     this.isSignUp = !this.isSignUp;
     this.error = '';
+    this.loginForm.reset();
+    this.signupForm.reset();
   }
 
   async onSubmit() {
     if (this.isSignUp && this.signupForm.valid) {
       const { email, password, confirmPassword } = this.signupForm.value;
-      
       if (password !== confirmPassword) {
         this.error = 'Passwords do not match';
         return;
@@ -50,7 +57,9 @@ export class LoginComponent implements OnInit {
 
       try {
         this.loading = true;
+        this.error = '';
         await this.authService.signUpWithEmail(email, password);
+        this.router.navigate(['/chat']);
       } catch (error: any) {
         this.error = error.message;
       } finally {
@@ -58,10 +67,11 @@ export class LoginComponent implements OnInit {
       }
     } else if (!this.isSignUp && this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
-      
       try {
         this.loading = true;
+        this.error = '';
         await this.authService.signInWithEmail(email, password);
+        this.router.navigate(['/chat']);
       } catch (error: any) {
         this.error = error.message;
       } finally {
@@ -73,7 +83,9 @@ export class LoginComponent implements OnInit {
   async signInWithGoogle() {
     try {
       this.loading = true;
+      this.error = '';
       await this.authService.signInWithGoogle();
+      this.router.navigate(['/chat']);
     } catch (error: any) {
       this.error = error.message;
     } finally {
